@@ -3,13 +3,11 @@ from app import app
 import json
 from unittest.mock import patch
 
-# تجهيز العميل (client) للاختبارات
 @pytest.fixture
 def client():
     with app.test_client() as client:
         yield client
 
-# محاكاة بيانات الرد من API خارجي
 mock_teams_response = {
     "response": [
         {"team": {"id": 1, "name": "Team A"}},
@@ -29,7 +27,6 @@ mock_league_info_response = {
     ]
 }
 
-# Helper: mock requests.get ليرجع البيانات المحددة
 def mock_requests_get_teams(*args, **kwargs):
     class MockResponse:
         def json(self_inner):
@@ -48,7 +45,6 @@ def mock_requests_get_league_info(*args, **kwargs):
             return mock_league_info_response
     return MockResponse()
 
-# اختبار endpoint /league-teams
 @patch("requests.get", side_effect=mock_requests_get_teams)
 def test_league_teams_success(mock_get, client):
     response = client.get("/league-teams?league=39")
@@ -63,7 +59,6 @@ def test_league_teams_no_league(client):
     data = json.loads(response.data)
     assert "error" in data
 
-# اختبار endpoint /league-matches
 @patch("requests.get", side_effect=mock_requests_get_matches)
 def test_league_matches_success(mock_get, client):
     response = client.get("/league-matches?league=39")
@@ -78,7 +73,6 @@ def test_league_matches_no_league(client):
     data = json.loads(response.data)
     assert "error" in data
 
-# اختبار endpoint /league-info
 @patch("requests.get", side_effect=mock_requests_get_league_info)
 def test_league_info_success(mock_get, client):
     response = client.get("/league-info?league=39")
