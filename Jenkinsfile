@@ -32,7 +32,7 @@ pipeline {
                 sh 'echo "FLASK_APP=app.py" > .env'
                 sh 'echo "FLASK_ENV=development" >> .env'
                 sh './$VENV_DIR/bin/flask run --host=0.0.0.0 --port=5000 &'
-                sh 'sleep 5' // ننتظر شوي بعد التشغيل
+                sh 'sleep 5' 
             }
         }
     }
